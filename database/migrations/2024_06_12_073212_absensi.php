@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('jadwal_id')->constrained('jadwalpelajaran')->cascadeOnDelete();
             $table->datetime('TanggalAbsen');
             $table->foreignId('siswa_id')->constrained('siswa')->cascadeOnDelete();
+            $table->string('barcode_id');
             $table->string('CreatedBy');
             $table->timestamps();
         });

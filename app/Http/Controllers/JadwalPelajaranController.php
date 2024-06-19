@@ -75,14 +75,23 @@ class JadwalPelajaranController extends Controller
                     ->leftJoin('matapelajaran','jadwalpelajaran.mapel_id','matapelajaran.id')
                     ->leftJoin('jampelajaran', 'jadwalpelajaran.jam_id', 'jampelajaran.id')
                     ->leftJoin('kelas', 'jadwalpelajaran.kelas_id','kelas.id')
-                    ->leftJoin('guru', 'jadwalpelajaran.guru_id', 'guru.id')
-                    ->where('jadwalpelajaran.Hari', $Hari)
-                    ->where('jadwalpelajaran.guru_id', $guru_id)
-                    ->where('jadwalpelajaran.mapel_id', $mapel_id)
-                    ->where('jadwalpelajaran.kelas_id', $kelas_id)
-                    ->where('jadwalpelajaran.jam_id', $jam_id)->get();
-
-        $data['data'] = $jadwalpelajaran;
+                    ->leftJoin('guru', 'jadwalpelajaran.guru_id', 'guru.id');
+        if ($Hari != "") {
+            $jadwalpelajaran->where('jadwalpelajaran.Hari', $Hari);
+        }
+        if ($guru_id != "") {
+            $jadwalpelajaran->where('jadwalpelajaran.guru_id', $guru_id);
+        }
+        if ($mapel_id != "") {
+                $jadwalpelajaran->where('jadwalpelajaran.mapel_id', $mapel_id);
+            }
+        if ($kelas_id) {
+            $jadwalpelajaran->where('jadwalpelajaran.kelas_id', $kelas_id);
+        }
+        if ($jam_id) {
+            $jadwalpelajaran->where('jadwalpelajaran.jam_id', $jam_id);
+        }
+        $data['data'] = $jadwalpelajaran->get();
         return response()->json($data);
     }
 

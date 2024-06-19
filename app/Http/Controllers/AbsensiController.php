@@ -157,5 +157,131 @@ class AbsensiController extends Controller
         return response()->json($data);
     }
 
+    public function CheckBarcodeAbsensi(Request $request){
+        $data = array('success'=>false, 'message'=>'', 'data'=>array());
+
+        try {
+            $model = GenerateBarcodeAbsensi::where('uuid','=',$request->input('uuid'))
+                        ->where(DB::raw("DATE(Tanggal)"),"=", $request->input('Tanggal'))
+                        ->first();
+
+            if ($model) {
+                if ($model->valid == 0) {
+                    $data["message"] = "Barcode tidak Valid";
+                }
+                else{
+                    $data['success'] = true;
+                    $data['data'] = $model;
+                }
+            }
+            else{
+                $data["message"] = "Barcode Tidak Ada";
+            }
+        } catch (\Exception $e) {
+            $data['message'] = $e->getMessage();
+        }
+
+        return response()->json($data);
+
+    }
+
+    public function ShowDataAbsensi(Request $request)
+    {
+        $data = array('success'=>false, 'message'=>'', 'data'=>array());
+
+        $TglAwal = $request->input('TglAwal');
+        $TglAkhir = $request->input('TglAkhir');
+        $kelas_id = $request->input('kelas_id');
+        $mapel_id = $request->input('mapel_id');
+        $siswa_id = $request->input('siswa_id');
+
+        try {
+            $sql = "absensi.*,DATE_FORMAT(absensi.TanggalAbsen, '%d-%m-%Y %T') FormatedAbsensiDate, CONCAT(DATE_FORMAT(jampelajaran.JamMulai, '%H:%i'),' - ', DATE_FORMAT(jampelajaran.JamSelesai, '%H:%i')) Jam, kelas.NamaKelas, guru.NamaGuru, matapelajaran.NamaMataPelajaran, siswa.NamaSiswa";
+            $oAbsen = Absensi::selectRaw($sql)
+                        ->leftJoin('jadwalpelajaran', 'absensi.jadwal_id', 'jadwalpelajaran.id')
+                        ->leftJoin('matapelajaran','jadwalpelajaran.mapel_id','matapelajaran.id')
+                        ->leftJoin('jampelajaran', 'jadwalpelajaran.jam_id', 'jampelajaran.id')
+                        ->leftJoin('kelas', 'jadwalpelajaran.kelas_id','kelas.id')
+                        ->leftJoin('guru', 'jadwalpelajaran.guru_id', 'guru.id')
+                        ->leftJoin('siswa', 'absensi.siswa_id','siswa.id')
+                        ->whereBetween(DB::raw("DATE(absensi.TanggalAbsen)"), [$TglAwal, $TglAkhir]);
+            if ($kelas_id != "") {
+                $oAbsen->where('jadwalpelajaran.kelas_id', $kelas_id);
+            }
+            if ($mapel_id != "") {
+                $oAbsen->where('jadwalpelajaran.mapel_id', $mapel_id);
+            }
+            if ($siswa_id != "") {
+                $oAbsen->where('absensi.siswa_id', $siswa_id);
+            }
+
+            $data['success'] = true;
+            $data['data'] = $oAbsen->get();
+        } catch (\Exception $e) {
+            $data['message'] = $e->getMessage();
+        }
+
+        return response()->json($data);
+    }
+
+    public function ShowReviewAbsensi(Request $request)
+    {
+        $data = array('success'=>false, 'message'=>'', 'data'=>array());
+
+        $Tanggal = $request->input('Tanggal');
+        $Hari = $request->input('Hari');
+        $Siswa_ID = $request->input('Siswa_ID');
+
+        try {
+            $oAbsen = DB::select('CALL fsp_getReviewAbsen(?, ?, ?)', [$Tanggal, $Hari, $Siswa_ID]);
+
+            $data['success'] = true;
+            $data['data'] = $oAbsen;
+        } catch (\Exception $e) {
+            $data['message'] = $e->getMessage();
+        }
+
+        return response()->json($data);
+    }
+
+    public function insertAbsensi(Request $request)
+    {
+        $data = array('success'=>false, 'message'=>'', 'data'=>array());
+
+        try {
+
+            $find = Absensi::where('jadwal_id',$request->input('jadwal_id'))
+                    ->where('siswa_id', $request->input('siswa_id'))->get();
+            if (count($find) > 0) {
+                $data['message'] = "Anda Sudah Absen pada jadwal pelajaran ini !";
+                goto jump;
+            }
+
+            $model = new Absensi;
+            $model->jadwal_id = $request->input('jadwal_id');
+            $model->TanggalAbsen = $request->input('TanggalAbsen');
+            $model->siswa_id = $request->input('siswa_id');
+            $model->barcode_id = $request->input('barcode_id');
+            $model->CreatedBy = $request->input('CreatedBy');
+
+            $save = $model->save();
+
+            if ($save) {
+                $data['success'] = true;
+                $data['message'] = "Berhasil Absen";
+                
+            }else{
+                $data['success'] = false;
+                $data['message'] = "Absen Gagal";
+            }
+        } catch (\Exception $e) {
+            $data['success'] = false;
+            $data['message'] = $e->getMessage();
+        }
+        jump:
+
+        return response()->json($data);
+    }
+
 
 }

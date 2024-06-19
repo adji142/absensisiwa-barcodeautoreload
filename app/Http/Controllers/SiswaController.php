@@ -47,6 +47,25 @@ class SiswaController extends Controller
         ]);
     }
 
+    public function FindSiswa(Request $request)
+    {
+        $data = array('success' => false, 'message' => '', 'data' => array(), 'token' => "");
+
+        try {
+            $siswa = Siswa::selectRaw("siswa.*, kelas.NamaKelas, tahunajaran.TahunAjaran")
+                    ->leftJoin('kelas','siswa.Kelas_id','kelas.id')
+                    ->leftJoin('tahunajaran', 'siswa.TahunAjaran','tahunajaran.id')
+                    ->get();
+
+            $data['success'] = true;
+            $data['data'] = $siswa;
+        
+        } catch (\Exception $e) {
+            $data['message'] = $e->getMessage();
+        }
+        return response()->json($data);
+    }
+
     public function store(Request $request)
     {
     	Log::debug($request->all());

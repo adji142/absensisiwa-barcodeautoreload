@@ -78,39 +78,10 @@ class LoginController extends Controller
                 'password' => $request->input('password'),
             ];
 
-            // GetRecordOwnerID
-
-            $RecordOwnerID = "";
-
-            $user = User::where('email', '=', $request->input('email'))->first();
-            if ($user) {
-            	$RecordOwnerID = $user->RecordOwnerID;
-            }
-
-            // Validasi Kode Partner Exist
-            $oPartner = Company::where('KodePartner','=',$RecordOwnerID)->first();
-
-            if (!$oPartner) {
-                $data['message'] = "Partner tidak ditemukan, Silahkan Hubungi Operator";
-                // throw new \Exception('Partner tidak ditemukan, Silahkan Hubungi Operator');
-                goto jump;
-            }
-
-            // Validasi Active Subscription
-
-            $NowDate = Carbon::now()->toDateString();
-            $DueDate = Carbon::now()->subDays($oPartner->ExtraDays)->toDateString();
-
-            // $oPartner = DB::tables('company')
-            //                 ->whereDate('EndSubs','>',$DueDate)
-            //                 ->get();
-            $oPartner = Company::where('EndSubs','<',$DueDate);
-
-            if ($oPartner->count() > 0) {
-                // throw new \Exception('Langganan Telah Habis, Silahkan Melakukan Perpanjangan Langganan');
-                $data['message'] = "Langganan Telah Habis, Silahkan Melakukan Perpanjangan Langganan";
-                goto jump;
-            }
+            $user = User::selectRaw("users.*, userrole.roleid, roles.RoleName")
+                    ->leftJoin('userrole','users.id','userrole.userid')
+                    ->leftJoin('roles','userrole.roleid','roles.id')
+                    ->where('email', '=', $request->input('email'))->first();
 
             if ($user) {
                 if ($user->active == 'N') {
