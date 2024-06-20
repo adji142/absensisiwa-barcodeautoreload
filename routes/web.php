@@ -177,3 +177,4 @@ Route::post('/absensi/generatecode', [AbsensiController::class, 'GenerateQR'])->
 Route::get('/generate-qr-code', [AbsensiController::class, 'generateQrCode']);
 
 Route::post('/absensi/deactivebarcode', [AbsensiController::class, 'DeActivebarcode'])->name('absensi-deactivebarcode')->middleware('auth');
+Route::post('readreviewabsen',[AbsensiController::class,'ShowDataAbsensi'])->name('absensi-readreviewabsen')->middleware('auth');

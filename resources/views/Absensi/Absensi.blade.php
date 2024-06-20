@@ -42,50 +42,66 @@
 				<div class="row">
 					<div class="col-12  px-4">
 						<div class="card card-custom gutter-b bg-white border-0" >
+							<div class="card-header" >
+								Filter Data
+							</div>
+
+							<div class="card-body" >
+								<div class="row">
+									<div class="col-md-2">
+										<label  class="text-body">Tanggal Awal</label>
+										<input type="date" class="form-control" id="TglAwal" name="TglAwal">
+									</div>
+									<div class="col-md-2">
+										<label  class="text-body">Tanggal Akhir</label>
+										<input type="date" class="form-control" id="TglAkhir" name="TglAkhir">
+									</div>
+									<div class="col-md-3">
+										<label  class="text-body">Kelas</label>
+										<select id="kelas_id" name="kelas_id" class="js-example-basic-single js-states form-control bg-transparent">
+                        					<option value="">Pilih Kelas</option>
+                        					@foreach($kelas as $v)
+                        						<option value="{{ $v['id'] }}">{{ $v['NamaKelas'] }}</option>
+                        					@endforeach
+                        				</select>
+									</div>
+
+									<div class="col-md-3">
+										<label  class="text-body">Mata Pelajaran</label>
+										<select id="mapel_id" name="mapel_id" class="js-example-basic-single js-states form-control bg-transparent">
+                            					<option value="">Pilih Mata Pelajaran</option>
+                            					@foreach($mapel as $v)
+                            						<option value="{{ $v['id'] }}">{{ $v['NamaMataPelajaran'] }}</option>
+                            					@endforeach
+                            				</select>
+									</div>
+
+									<div class="col-md-2">
+										<!-- <label  class="text-body">Status User</label> -->
+										<br>
+										<button type="button" class="btn btn-danger text-white font-weight-bold me-1 mb-1" id="btSearch">Cari Data</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-12  px-4">
+						<div class="card card-custom gutter-b bg-white border-0" >
 							<div class="card-body" >
 								<div class="table-responsive" id="printableTable">
 									<table id="orderTable" class="display" style="width:100%">
 										<thead>
 											<tr>
-												<th>NIK</th>
-												<th>Nama Absensi</th>
-												<th>Email</th>
-												<th>Phone</th>
-												<th>Tempat Lahir</th>
-												<th>Tanggal Lahir</th>
-												<th>MataPelajaran</th>
-												<th class=" no-sort text-end">Action</th>
+												<th>NIS</th>
+												<th>Nama Siswa</th>
+												<th>Mata Pelajaran</th>
+												<th>Jam Pelajaran</th>
+												<th>Kelas</th>
+												<th>Tanggal Absen</th>
 											</tr>
 										</thead>
 										<tbody>
-											@if (count($absensi) > 0)
-												@foreach($absensi as $v)
-												<tr>
-													<td>{{ $v['NIK'] }}</td>
-													<td>{{ $v['NamaAbsensi'] }}</td>
-													<td>{{ $v['Email'] }}</td>
-													<td>{{ $v['Phone'] }}</td>
-													<td>{{ $v['TempatLahir'] }}</td>
-													<td>{{ $v['TanggalLahir'] }}</td>
-													<td>{{ $v['NamaMataPelajaran'] }}</td>
-													<td>
-														<div class="card-toolbar text-end">
-															<button class="btn p-0 shadow-none" type="button" id="dropdowneditButton1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-																<span class="svg-icon">
-																	<svg width="20px" height="20px" viewBox="0 0 16 16" class="bi bi-three-dots text-body" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-																		<path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"></path>
-																	</svg>
-																</span>
-															</button>
-															<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdowneditButton1"  style="position: absolute; transform: translate3d(1001px, 111px, 0px); top: 0px; left: 0px; will-change: transform;">
-																<a class="dropdown-item" href="{{ url('absensi/form/' . $v['id']) }}">Edit</a>
-																<a class="dropdown-item" title="Delete" href="{{ route('absensi-delete', $v['id']) }}" data-confirm-delete="true">Delete</a>
-															</div>
-														</div>
-													</td>
-												</tr>
-												@endforeach
-											@endif
+											
 										</tbody>
 									</table>
 								</div>
@@ -104,15 +120,88 @@
 
 @push('scripts')
 <script type="text/javascript">
-	jQuery(document).ready(function() {
-		jQuery('#orderTable').DataTable({
-			"pagingType": "simple_numbers",
-	  
-		"columnDefs": [ {
-		  "targets"  : 'no-sort',
-		  "orderable": false,
-		}]
+	jQuery(function () {
+		var guru = [];
+		jQuery(document).ready(function() {
+			jQuery('#orderTable').DataTable({
+				"pagingType": "simple_numbers",
+		  
+			"columnDefs": [ {
+			  "targets"  : 'no-sort',
+			  "orderable": false,
+			}]
+			});
+
+			// 
+			var now = new Date();
+	    	var day = ("0" + now.getDate()).slice(-2);
+	    	var month = ("0" + (now.getMonth() + 1)).slice(-2);
+	    	var firstDay = now.getFullYear()+"-"+month+"-01";
+	    	var NowDay = now.getFullYear()+"-"+month+"-"+day;
+	    	GetDate = now.getFullYear()+"-"+month+"-"+day;
+
+	    	jQuery('#TglAwal').val(NowDay);
+	    	jQuery('#TglAkhir').val(NowDay);
+
+	    	guru = <?php echo $guru ?>;
+	    	console.log(guru);
+
+	    	if (guru.length > 0) {
+	    		jQuery('#mapel_id').val(guru[0]['mapel_id']).trigger('change');
+	    		jQuery('#mapel_id').attr('disabled',true);
+	    	}
+	    	else{
+	    		jQuery('#mapel_id').attr('disabled',false);
+	    	}
+
+	    	getData();
 		});
-	} );
+
+		jQuery('#btSearch').click(function () {
+			getData();
+		})
+
+		function getData() {
+			$.ajax({
+                async:false,
+                type: 'post',
+                url: "{{route('absensi-readreviewabsen')}}",
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include the CSRF token in the headers
+                },
+                data: {
+                    'TglAwal' : jQuery('#TglAwal').val(),
+                    'TglAkhir' : jQuery('#TglAkhir').val(),
+                    'kelas_id' : jQuery('#kelas_id').val(),
+                    'mapel_id' : jQuery('#mapel_id').val(),
+                    'siswa_id' : ''
+                },
+                dataType: 'json',
+                success: function(response) {
+                    var table = jQuery('#orderTable').DataTable();
+                    table.clear().draw();
+                    for (var i = 0; i < response.data.length; i++) {
+                    	// Things[i]
+                    	// console.log(response.data[i])
+      //               	<th>NIS</th>
+						// <th>Nama Siswa</th>
+						// <th>Mata Pelajaran</th>
+						// <th>Jam Pelajaran</th>
+						// <th>Kelas</th>
+						// <th>Tanggal Absen</th>
+						table.row.add([
+		                    response.data[i]['NIS'],
+		                    response.data[i]['NamaSiswa'],
+		                    response.data[i]['NamaMataPelajaran'],
+		                    response.data[i]['Jam'],
+		                    response.data[i]['NamaKelas'],
+		                    response.data[i]['FormatedAbsensiDate'],
+		                ]).draw(false);
+                    }
+                }
+            });
+		}
+	})
+	
 </script>
 @endpush

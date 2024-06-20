@@ -30,12 +30,19 @@ class AbsensiController extends Controller
     public function View(Request $request){
     	$sql = "";
     	$absensi = Absensi::selectRaw("*")->get();
+        $kelas = Kelas::all();
+        $mapel = MataPelajaran::all();
+
+        $guru = Guru::where('email', Auth::user()->email)->get();
 
     	$title = 'Delete Guru !';
         $text = "Are you sure you want to delete ?";
         confirmDelete($title, $text);
         return view("Absensi.Absensi",[
-            'absensi' => $absensi
+            'absensi' => $absensi,
+            'kelas' => $kelas,
+            'mapel' => $mapel,
+            'guru' => $guru
         ]);
     }
 
@@ -196,7 +203,7 @@ class AbsensiController extends Controller
         $siswa_id = $request->input('siswa_id');
 
         try {
-            $sql = "absensi.*,DATE_FORMAT(absensi.TanggalAbsen, '%d-%m-%Y %T') FormatedAbsensiDate, CONCAT(DATE_FORMAT(jampelajaran.JamMulai, '%H:%i'),' - ', DATE_FORMAT(jampelajaran.JamSelesai, '%H:%i')) Jam, kelas.NamaKelas, guru.NamaGuru, matapelajaran.NamaMataPelajaran, siswa.NamaSiswa";
+            $sql = "absensi.*,DATE_FORMAT(absensi.TanggalAbsen, '%d-%m-%Y %T') FormatedAbsensiDate, CONCAT(DATE_FORMAT(jampelajaran.JamMulai, '%H:%i'),' - ', DATE_FORMAT(jampelajaran.JamSelesai, '%H:%i')) Jam, kelas.NamaKelas, guru.NamaGuru, matapelajaran.NamaMataPelajaran, siswa.NamaSiswa, siswa.NIS ";
             $oAbsen = Absensi::selectRaw($sql)
                         ->leftJoin('jadwalpelajaran', 'absensi.jadwal_id', 'jadwalpelajaran.id')
                         ->leftJoin('matapelajaran','jadwalpelajaran.mapel_id','matapelajaran.id')
