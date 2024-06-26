@@ -41,13 +41,13 @@ License: You must have a valid license purchased only from themeforest(the above
 			<img class="img-fluid" src="{{ asset('images/loadergif.gif')}}" alt="loading">
 		</div>
 	</div> -->
-	<div class="l-form" style="background-image: url({{ asset('images/misc/bg-login1.png')}});">
+	<div class="l-form" style="background-image: url({{ asset('images/misc/LoginBackground.jpg') }}); ;background-size: cover; background-repeat: no-repeat; background-position: center;">
 		<form method="post" action="{{route('action-login')}}" class="adminloginform">
 			@csrf
 			<div class="maintitle">
 				<div class="card-title mb-0">
 					<h3 class="card-label font-weight-bold mb-0 text-body">
-						<img src="{{ asset('images/misc/logo.png')}}" alt="logo">
+						<img src="{{ asset('images/misc/logologin.png')}}" alt="logo" width="50%">
 					</h3>
 				
 				</div>

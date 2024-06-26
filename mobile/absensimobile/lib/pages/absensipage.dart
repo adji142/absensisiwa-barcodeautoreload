@@ -75,99 +75,101 @@ class _AbsensiPageState extends State<AbsensiPage> {
         foregroundColor: Colors.white,
         title: Text("Jadwal Pelajaran"),
       ),
-      body: Expanded(
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.all(this.widget.session!.width * 2),
-              child: SizedBox(
-                width: double.infinity,
-                height: this.widget.session!.hight * 10,
-                child: ListTile(
-                  leading: Icon(
-                    Icons.calendar_month
-                  ),
-                  title: Text(
-                    "Tanggal",
-                    style: TextStyle(
-                      fontSize: this.widget.session!.width * 5,
-                      fontWeight: FontWeight.bold
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(this.widget.session!.width * 2),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: this.widget.session!.hight * 10,
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.calendar_month
                     ),
-                  ),
-                  subtitle: Text(
-                    selectedDate.toString().split(" ")[0],
-                    style: TextStyle(
-                      fontSize: this.widget.session!.width * 5,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red
+                    title: Text(
+                      "Tanggal",
+                      style: TextStyle(
+                        fontSize: this.widget.session!.width * 5,
+                        fontWeight: FontWeight.bold
+                      ),
                     ),
+                    subtitle: Text(
+                      selectedDate.toString().split(" ")[0],
+                      style: TextStyle(
+                        fontSize: this.widget.session!.width * 5,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red
+                      ),
+                    ),
+                    onTap: (){
+                      _selectDate(context);
+                    },
                   ),
-                  onTap: (){
-                    _selectDate(context);
-                  },
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: this.widget.session!.width * 2,
-                right: this.widget.session!.width * 2
+              Padding(
+                padding: EdgeInsets.only(
+                  left: this.widget.session!.width * 2,
+                  right: this.widget.session!.width * 2
+                ),
+                child: ListTile(
+                  leading: Icon(Icons.date_range_sharp),
+                  title: Text(
+                    Jadwal().convertDayName(_DayName),
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: this.widget.session!.width * 5
+                    ),
+                  ),
+                )
               ),
-              child: ListTile(
-                leading: Icon(Icons.date_range_sharp),
-                title: Text(
-                  Jadwal().convertDayName(_DayName),
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontSize: this.widget.session!.width * 5
+              Padding(
+                padding: EdgeInsets.all(this.widget.session!.width * 2),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: this.widget.session!.hight * 65,
+                  child: FutureBuilder(
+                    future: Absensi(this.widget.session, {"TglAwal":selectedDate.toString().split(' ')[0], "TglAkhir":selectedDate.toString().split(' ')[0], "siswa_id": this.widget.session!.DataSiswa[0]["id"].toString() }).getAbsensi(), 
+                    builder: (context, snapshot){
+                      if(snapshot.hasError){
+                        return Container(
+                          child: Center(
+                            child: Text(snapshot.error.toString()),
+                          ),
+                        );
+                      }
+                      else{
+                        return RefreshIndicator(
+                          onRefresh: _refreshData,
+                          child: ListView.builder(
+                            itemCount: snapshot.data != null ? snapshot.data!["data"].length : 0,
+                            itemBuilder: (context, index){
+                              return Card(
+                                child: ListTile(
+                                  leading: CircleAvatar(
+                                    child: Text((index +1).toString()),
+                                  ),
+                                  title: Text(
+                                    snapshot.data!["data"][index]["NamaSiswa"] +" - " + snapshot.data!["data"][index]["NamaMataPelajaran"]
+                                  ),
+                                  subtitle: Text(
+                                    snapshot.data!["data"][index]["FormatedAbsensiDate"]
+                                  ),
+                                ),
+                              );
+                            }
+                          ), 
+                        );
+                      }
+                    }
                   ),
                 ),
               )
-            ),
-            Padding(
-              padding: EdgeInsets.all(this.widget.session!.width * 2),
-              child: SizedBox(
-                width: double.infinity,
-                height: this.widget.session!.hight * 65,
-                child: FutureBuilder(
-                  future: Absensi(this.widget.session, {"TglAwal":selectedDate.toString().split(' ')[0], "TglAkhir":selectedDate.toString().split(' ')[0], "siswa_id": this.widget.session!.DataSiswa[0]["id"].toString() }).getAbsensi(), 
-                  builder: (context, snapshot){
-                    if(snapshot.hasError){
-                      return Container(
-                        child: Center(
-                          child: Text(snapshot.error.toString()),
-                        ),
-                      );
-                    }
-                    else{
-                      return RefreshIndicator(
-                        onRefresh: _refreshData,
-                        child: ListView.builder(
-                          itemCount: snapshot.data != null ? snapshot.data!["data"].length : 0,
-                          itemBuilder: (context, index){
-                            return Card(
-                              child: ListTile(
-                                leading: CircleAvatar(
-                                  child: Text((index +1).toString()),
-                                ),
-                                title: Text(
-                                  snapshot.data!["data"][index]["NamaSiswa"] +" - " + snapshot.data!["data"][index]["NamaMataPelajaran"]
-                                ),
-                                subtitle: Text(
-                                  snapshot.data!["data"][index]["FormatedAbsensiDate"]
-                                ),
-                              ),
-                            );
-                          }
-                        ), 
-                      );
-                    }
-                  }
-                ),
-              ),
-            )
-          ],
-        )
+            ],
+          )
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),

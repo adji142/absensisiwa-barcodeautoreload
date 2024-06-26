@@ -63,156 +63,158 @@ class _ProfilePageState extends State<ProfilePage> {
         foregroundColor: Colors.white,
         title: Text("Profile"),
       ),
-      body: Expanded(
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                top: this.widget.session!.width * 5,
-                left: this.widget.session!.width * 2,
-                right: this.widget.session!.width * 2
-              ),
-              child: TextField(
-                controller: _NIS,
-                decoration: InputDecoration(
-                  labelText: 'NIS',
-                  border: OutlineInputBorder(),
-                  enabled: false,
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                  top: this.widget.session!.width * 5,
+                  left: this.widget.session!.width * 2,
+                  right: this.widget.session!.width * 2
                 ),
-                style: TextStyle(
-                  color: Colors.black
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                top: this.widget.session!.width * 2,
-                left: this.widget.session!.width * 2,
-                right: this.widget.session!.width * 2
-              ),
-              child: TextField(
-                controller: _NamaSiswa,
-                decoration: InputDecoration(
-                  labelText: 'Nama Siswa',
-                  border: OutlineInputBorder(),
-                  enabled: false
-                ),
-                style: TextStyle(
-                  color: Colors.black
+                child: TextField(
+                  controller: _NIS,
+                  decoration: InputDecoration(
+                    labelText: 'NIS',
+                    border: OutlineInputBorder(),
+                    enabled: false,
+                  ),
+                  style: TextStyle(
+                    color: Colors.black
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                top: this.widget.session!.width * 2,
-                left: this.widget.session!.width * 2,
-                right: this.widget.session!.width * 2
-              ),
-              child: TextField(
-                controller: _Email,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
-                  enabled: false,
-                  hintText: "aissystemsolo@gmail.com"
+              Padding(
+                padding: EdgeInsets.only(
+                  top: this.widget.session!.width * 2,
+                  left: this.widget.session!.width * 2,
+                  right: this.widget.session!.width * 2
                 ),
-                style: TextStyle(
-                  color: Colors.black
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                top: this.widget.session!.width * 2,
-                left: this.widget.session!.width * 2,
-                right: this.widget.session!.width * 2
-              ),
-              child: TextField(
-                controller: _NoHP,
-                decoration: InputDecoration(
-                  labelText: 'Phone',
-                  border: OutlineInputBorder(),
-                  enabled: false,
-                ),
-                style: TextStyle(
-                  color: Colors.black
+                child: TextField(
+                  controller: _NamaSiswa,
+                  decoration: InputDecoration(
+                    labelText: 'Nama Siswa',
+                    border: OutlineInputBorder(),
+                    enabled: false
+                  ),
+                  style: TextStyle(
+                    color: Colors.black
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                top: this.widget.session!.width * 2,
-                left: this.widget.session!.width * 2,
-                right: this.widget.session!.width * 2
-              ),
-              child: TextField(
-                controller: _TempatLahir,
-                decoration: InputDecoration(
-                  labelText: 'Tempat Lahir',
-                  border: OutlineInputBorder(),
-                  enabled: false,
+              Padding(
+                padding: EdgeInsets.only(
+                  top: this.widget.session!.width * 2,
+                  left: this.widget.session!.width * 2,
+                  right: this.widget.session!.width * 2
                 ),
-                style: TextStyle(
-                  color: Colors.black
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                top: this.widget.session!.width * 2,
-                left: this.widget.session!.width * 2,
-                right: this.widget.session!.width * 2
-              ),
-              child: TextField(
-                controller: _TanggalLahir,
-                decoration: InputDecoration(
-                  labelText: 'Tanggal Lahir',
-                  border: OutlineInputBorder(),
-                  enabled: false,
-                ),
-                style: TextStyle(
-                  color: Colors.black
+                child: TextField(
+                  controller: _Email,
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    border: OutlineInputBorder(),
+                    enabled: false,
+                    hintText: "aissystemsolo@gmail.com"
+                  ),
+                  style: TextStyle(
+                    color: Colors.black
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                top: this.widget.session!.width * 2,
-                left: this.widget.session!.width * 2,
-                right: this.widget.session!.width * 2
-              ),
-              child: TextField(
-                controller: _Kelas,
-                decoration: InputDecoration(
-                  labelText: 'Kelas',
-                  border: OutlineInputBorder(),
-                  enabled: false,
+              Padding(
+                padding: EdgeInsets.only(
+                  top: this.widget.session!.width * 2,
+                  left: this.widget.session!.width * 2,
+                  right: this.widget.session!.width * 2
                 ),
-                style: TextStyle(
-                  color: Colors.black
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                top: this.widget.session!.width * 2,
-                left: this.widget.session!.width * 2,
-                right: this.widget.session!.width * 2
-              ),
-              child: TextField(
-                controller: _TahunAjaran,
-                decoration: InputDecoration(
-                  labelText: 'Tahun Ajaran',
-                  border: OutlineInputBorder(),
-                  enabled: false,
-                ),
-                style: TextStyle(
-                  color: Colors.black
+                child: TextField(
+                  controller: _NoHP,
+                  decoration: InputDecoration(
+                    labelText: 'Phone',
+                    border: OutlineInputBorder(),
+                    enabled: false,
+                  ),
+                  style: TextStyle(
+                    color: Colors.black
+                  ),
                 ),
               ),
-            )
-          ],
-        )
+              Padding(
+                padding: EdgeInsets.only(
+                  top: this.widget.session!.width * 2,
+                  left: this.widget.session!.width * 2,
+                  right: this.widget.session!.width * 2
+                ),
+                child: TextField(
+                  controller: _TempatLahir,
+                  decoration: InputDecoration(
+                    labelText: 'Tempat Lahir',
+                    border: OutlineInputBorder(),
+                    enabled: false,
+                  ),
+                  style: TextStyle(
+                    color: Colors.black
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  top: this.widget.session!.width * 2,
+                  left: this.widget.session!.width * 2,
+                  right: this.widget.session!.width * 2
+                ),
+                child: TextField(
+                  controller: _TanggalLahir,
+                  decoration: InputDecoration(
+                    labelText: 'Tanggal Lahir',
+                    border: OutlineInputBorder(),
+                    enabled: false,
+                  ),
+                  style: TextStyle(
+                    color: Colors.black
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  top: this.widget.session!.width * 2,
+                  left: this.widget.session!.width * 2,
+                  right: this.widget.session!.width * 2
+                ),
+                child: TextField(
+                  controller: _Kelas,
+                  decoration: InputDecoration(
+                    labelText: 'Kelas',
+                    border: OutlineInputBorder(),
+                    enabled: false,
+                  ),
+                  style: TextStyle(
+                    color: Colors.black
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  top: this.widget.session!.width * 2,
+                  left: this.widget.session!.width * 2,
+                  right: this.widget.session!.width * 2
+                ),
+                child: TextField(
+                  controller: _TahunAjaran,
+                  decoration: InputDecoration(
+                    labelText: 'Tahun Ajaran',
+                    border: OutlineInputBorder(),
+                    enabled: false,
+                  ),
+                  style: TextStyle(
+                    color: Colors.black
+                  ),
+                ),
+              )
+            ],
+          )
+        ],
       )
     );
   }
