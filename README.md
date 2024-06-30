@@ -2,13 +2,13 @@ SISTEM ABSENSI QR CODE
 1. STACK
    A. WEB BASED
    - **LARAVEL 10.10**
-       - **PHP 8.1**
+   - **PHP 8.1**
    B. Database
        - **MySQL 5.0 / 10.2.40-MariaDB**
    C. Mobile Apps
        - **Flutter framework  3.16.5**
        - **Dart v. 3.2.3**
-2. Cara Installasi
+3. Cara Installasi
    A. Web Apps (**Manual Installation**)
        - Download Source ini
        - Copy semua file ke root directory ex: C:\Xampp\htdocs\namafolder
