@@ -1,7 +1,7 @@
 SISTEM ABSENSI QR CODE
 1. STACK
    A. WEB BASED
-       - **LARAVEL 10.10**
+   - **LARAVEL 10.10**
        - **PHP 8.1**
    B. Database
        - **MySQL 5.0 / 10.2.40-MariaDB**
