@@ -4,7 +4,7 @@ SISTEM ABSENSI QR CODE
    - **LARAVEL 10.10**
    - **PHP 8.1**
    B. Database
-       - **MySQL 5.0 / 10.2.40-MariaDB**
+    - **MySQL 5.0 / 10.2.40-MariaDB**
    C. Mobile Apps
        - **Flutter framework  3.16.5**
        - **Dart v. 3.2.3**
