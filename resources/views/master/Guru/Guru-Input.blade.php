@@ -79,7 +79,7 @@
 	                            		<div class="col-md-6">
 	                            			<label  class="text-body">Phone</label>
 	                            			<fieldset class="form-group mb-3">
-	                            				<input type="number" class="form-control" id="Phone" name="Phone" placeholder="Masukan Email" value="{{ ($guru) ? $guru->Phone : '' }}" required="" >
+	                            				<input type="number" class="form-control" id="Phone" name="Phone" placeholder="Masukan No. Telepone" value="{{ ($guru) ? $guru->Phone : '' }}" required="" >
 	                            			</fieldset>
 	                            		</div>
 
