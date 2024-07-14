@@ -55,6 +55,7 @@ class SiswaController extends Controller
             $siswa = Siswa::selectRaw("siswa.*, kelas.NamaKelas, tahunajaran.TahunAjaran")
                     ->leftJoin('kelas','siswa.Kelas_id','kelas.id')
                     ->leftJoin('tahunajaran', 'siswa.TahunAjaran','tahunajaran.id')
+                    ->where("siswa.email", $request->input('email'))
                     ->get();
 
             $data['success'] = true;
