@@ -87,7 +87,7 @@
 						<div id="accordion">
 							<ul class="nav flex-column">
 								<li class="nav-item active">
-									<a href="index.html" class="nav-link">
+									<a href="{{ url('dashboard') }}" class="nav-link">
 										<span class="svg-icon nav-icon">
 											<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px"
 												viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
