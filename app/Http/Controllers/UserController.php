@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\Roles;
+use App\Models\roles;
 use App\Models\User;
 use App\Models\UserRole;
 
@@ -40,7 +40,7 @@ class UserController extends Controller
         $users = $users->paginate(4);
 
         // KelompokAkses
-        $roles = Roles::selectRaw("*")->get();
+        $roles = roles::selectRaw("*")->get();
 
         $title = 'Delete User !';
         $text = "Are you sure you want to delete ?";
@@ -61,7 +61,7 @@ class UserController extends Controller
 			->leftJoin('roles','roles.id','=','userrole.roleid')
 	        ->where('users.id','=', $id)->get();
         
-        $roles = Roles::selectRaw("*")->get();
+        $roles = roles::selectRaw("*")->get();
 
         return view("master.Auth.User-Input",[
             'users' => $users,
