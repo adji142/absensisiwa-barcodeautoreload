@@ -20,7 +20,7 @@ class GuruController extends Controller
 {
     public function View(Request $request){
 
-    	$guru = Guru::select("*")
+    	$guru = Guru::selectRaw("guru.*,matapelajaran.NamaMataPelajaran")
     				->leftJoin('matapelajaran','guru.mapel_id','matapelajaran.id')->get();
     	$mapel = MataPelajaran::all();
 
@@ -38,6 +38,7 @@ class GuruController extends Controller
     	$guru = Guru::find($id);
     	$mapel = MataPelajaran::all();
         
+        // var_dump($id);
         return view("master.Guru.Guru-Input",[
             'guru' => $guru, 
             'mapel' => $mapel
