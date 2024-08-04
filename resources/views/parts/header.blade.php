@@ -272,8 +272,7 @@
 
 							<div class="topbar-item" data-bs-toggle="dropdown" data-display="static">
 								<div class="btn btn-icon w-auto btn-clean d-flex align-items-center pr-1 ps-3">
-									<span class="text-dark-50 font-size-base d-none d-xl-inline me-3">Angilina
-										Deo</span>
+									<span class="text-dark-50 font-size-base d-none d-xl-inline me-3">{{ Auth::user()->name }}</span>
 									<span class="symbol symbol-35 symbol-light-success">
 										<span class="symbol-label font-size-h5 ">
 											<svg width="20px" height="20px" viewBox="0 0 16 16"
@@ -289,7 +288,7 @@
 
 							<div class="dropdown-menu dropdown-menu-right" style="min-width: 150px;">
 
-								<a href="#" class="dropdown-item">
+								<button class="dropdown-item" id="ChangePassword">
 									<span class="svg-icon svg-icon-xl svg-icon-primary me-2">
 										<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px"
 											viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -299,8 +298,8 @@
 											<circle cx="12" cy="7" r="4"></circle>
 										</svg>
 									</span>
-									Edit Profile
-								</a>
+									Ganti Password
+								</button>
 
 								<a href="{{url('logout')}}" class="dropdown-item">
 									<span class="svg-icon svg-icon-xl svg-icon-primary me-2">
@@ -357,7 +356,55 @@
 	<!--end::Page-->
 <!-- </div> -->
 <!--end::Main-->
+	<div class="modal fade" id="lookupGantiPassword" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+	    <div class="modal-dialog modal-dialog-scrollable" role="document">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	              <h5 class="modal-title" id="exampleModalScrollableTitle">Absen Siswa</h5>
+	              <button type="button" class="close rounded-pill btn btn-sm btn-icon btn-light btn-hover-primary m-0" data-bs-dismiss="modal" aria-label="Close">
+	                <svg width="20px" height="20px" viewBox="0 0 16 16" class="bi bi-x" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+	                    <path fill-rule="evenodd" d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+	                </svg>
+	              </button>
+	            </div>
+	            <div class="modal-body">
+	                <form id="frmChangePassword" action="{{route('changepass')}}" method="POST">
+	                	<div class="form-group row">
+	                		<div class="col-md-12">
+                    			<label  class="text-body">Email</label>
+                    			<fieldset class="form-group mb-3">
+                    				<input type="text" class="form-control" id="email" name="email" placeholder="Email" value="{{ Auth::user()->email }}" required="" readonly>
+                    			</fieldset>
+                    		</div>
+                    		<div class="col-md-12">
+                    			<label  class="text-body">Password Lama</label>
+                    			<fieldset class="form-group mb-3">
+                    				<input type="password" class="form-control" id="password" name="password" placeholder="Masukan Password Lama" required="">
+                    			</fieldset>
+                    		</div>
 
+                    		<div class="col-md-12">
+                    			<label  class="text-body">Password Baru</label>
+                    			<fieldset class="form-group mb-3">
+                    				<input type="password" class="form-control" id="password_new" name="password_new" placeholder="Masukan Password Baru" required="">
+                    			</fieldset>
+                    		</div>
+
+                    		<div class="col-md-12">
+                    			<label  class="text-body">Ulangi Password Baru</label>
+                    			<fieldset class="form-group mb-3">
+                    				<input type="password" class="form-control" id="password_new2" name="password_new2" placeholder="Ulangi Password Baru" required="">
+                    			</fieldset>
+                    		</div>
+                    		<div class="col-md-12">
+                    			<button id="btGantiPassword" type="submit" class="btn btn-success text-white font-weight-bold me-1 mb-1">Simpan</button>
+                    		</div>
+	                	</div>
+	                </form>
+	            </div>
+	        </div>
+	    </div>
+	</div>
 
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="{{asset('js/plugin.bundle.min.js')}}"></script>
@@ -384,12 +431,55 @@
 	<script src="{{asset('js/script.bundle.js')}}"></script>
 	<script src="{{asset('js/script-slick.js')}}"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 	<script>
 		// In your Javascript (external .js resource or <script> tag)
 		jQuery(document).ready(function() {
 			jQuery('.js-example-basic-single').select2();
 		});
-	</script>	
+
+		jQuery('#ChangePassword').click(function () {
+			// alert('Change')
+			// lookupGantiPassword
+			jQuery('#lookupGantiPassword').modal({backdrop: 'static', keyboard: false})
+            jQuery('#lookupGantiPassword').modal('show');
+		});
+
+		jQuery('#frmChangePassword').on('submit', function(event) {
+			event.preventDefault();
+			var formData = $(this).serialize();
+
+			$.ajax({
+		    	url: "{{route('changepass')}}",
+		    	type: 'POST',
+		    	data: formData,
+		    	dataType: 'json',
+		    	headers: {
+                	'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include the CSRF token in the headers
+            	},
+		    	success: function(response) {
+			        if (response.success == true) {
+			        	Swal.fire({
+	                        text: "Password Berhasil diganti, silahkan login ulang",
+	                        icon: "success",
+	                        title: "Horray...",
+	                        // text: "Data berhasil disimpan! <br> " + response.Kembalian,
+	                    }).then((result)=>{
+	                        window.location.href = '{{url("logout")}}';
+	                    });
+			        }
+			        else{
+			        	Swal.fire({
+	                        text: response.message,
+	                        icon: "error",
+	                        title: "Ups...",
+	                        // text: "Data berhasil disimpan! <br> " + response.Kembalian,
+	                    });
+			        }
+		    	},
+		    });
+		});
+	</script>
 	@include('sweetalert::alert')
 
 	@stack('scripts')

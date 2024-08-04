@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('login',[LoginController::class,'API_login']);
+Route::post('changepass',[LoginController::class,'ChangePassword']);
 Route::post('getsiswainfo',[SiswaController::class,'FindSiswa']);
 Route::post('getjadwal',[JadwalPelajaranController::class,'getJadwalJson']);
 Route::post('checkbarcode',[AbsensiController::class,'CheckBarcodeAbsensi']);

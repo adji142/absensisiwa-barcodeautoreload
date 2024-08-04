@@ -81,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
                         widget.sess!.idUser = value["data"]["id"];
                         widget.sess!.NamaUser = value["data"]["name"];
                         widget.sess!.Email = value["data"]["email"];
-                        widget.sess!.roleID = value["data"]["roleid"];
+                        widget.sess!.roleID = int.parse(value["data"]["roleid"].toString());
                         widget.sess!.roleName = value["data"]["RoleName"];
 
                         Map oSiswaParam() {

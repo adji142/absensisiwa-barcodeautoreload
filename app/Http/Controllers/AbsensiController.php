@@ -20,6 +20,7 @@ use App\Models\MataPelajaran;
 use App\Models\JamPelajaran;
 use App\Models\Kelas;
 use App\Models\Guru;
+use App\Models\Siswa;
 use App\Models\Absensi;
 use App\Models\DayConverter;
 use App\Models\GenerateBarcodeAbsensi;
@@ -264,10 +265,23 @@ class AbsensiController extends Controller
                 goto jump;
             }
 
+            $siswa_id = $request->input('siswa_id');
+
+            if ($request->input('source') == "Web") {
+                $fintSiswa = Siswa::where('NIS', $request->input('siswa_id'))->get();
+                if (count($fintSiswa) == 0) {
+                    $data['message'] = "Siswa Tidak ditemukan";
+                    goto jump;
+                }
+                else{
+                    $siswa_id = $fintSiswa[0]['id'];
+                }
+            }
+
             $model = new Absensi;
             $model->jadwal_id = $request->input('jadwal_id');
             $model->TanggalAbsen = $request->input('TanggalAbsen');
-            $model->siswa_id = $request->input('siswa_id');
+            $model->siswa_id = $siswa_id;
             $model->barcode_id = $request->input('barcode_id');
             $model->CreatedBy = $request->input('CreatedBy');
 

@@ -116,6 +116,48 @@ class LoginController extends Controller
         return response()->json($data);
     }
 
+    public function ChangePassword(Request $request)
+    {
+        $data = array('success' => false, 'message' => '', 'data' => array(), 'token' => "");
+
+        try {
+            $password = $request->input('password');
+            $password_new = $request->input('password_new');
+            $password_new2 = $request->input('password_new2');
+            
+            $model = User::where('email','=',$request->input('email'))
+                        ->where('password', '=', $password);
+
+            if ($model) {
+                $update = DB::table('users')
+                        ->where('email','=', $request->input('email'))
+                        ->update(
+                            [
+                                'password' => Hash::make($password_new),
+                            ]
+                        );
+                if ($update) {
+                    $data['success'] = true;
+                }
+                else{
+                    $data['success'] = false;
+                    $data['message'] = "Update Password Gagal";
+                    goto jump;
+                }
+            }
+            else{
+                $data['success'] = false;
+                $data['message'] = "Data User Tidak ditemukan";
+                goto jump;
+            }
+            jump:
+        } catch (\Exception $e) {
+            $data['message'] = $e->getMessage();
+        }
+
+        return response()->json($data);
+    }
+
     public function logout()
     {
         auth()->user()->tokens()->delete();

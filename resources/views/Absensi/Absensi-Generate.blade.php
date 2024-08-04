@@ -108,6 +108,8 @@
 
                             		<div class="col-md-12">
                             			<button type="button" id="btGenerateQRCode" class="btn btn-success text-white font-weight-bold me-1 mb-1">Buat Barcode</button>
+
+                                        <button type="button" id="btScanQRCode" class="btn btn-warning text-white font-weight-bold me-1 mb-1">Scan Barcode</button>
                             		</div>
                             	</div>
 							</div>
@@ -147,13 +149,89 @@
     </div>
 </div>
 
+<div class="modal fade" id="QRCodeScanner" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalScrollableTitle">Absen Siswa</h5>
+              <button type="button" class="close rounded-pill btn btn-sm btn-icon btn-light btn-hover-primary m-0" data-bs-dismiss="modal" aria-label="Close">
+                <svg width="20px" height="20px" viewBox="0 0 16 16" class="bi bi-x" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div id="QRreader" style="width:100%;"></div>
+                <p id="QRresult"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal" id="btSelesaiAbsen"> 
+                    <span class="">Selesai</span>
+                </button>
+            </div>      
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
+<script src="{{ asset('node_modules/html5-qrcode/html5-qrcode.min.js') }}"></script>
 <script type="text/javascript">
 	jQuery(function () {
         var LastUUID = "";
         var count = 0;
+        let html5QrcodeScanner = new Html5QrcodeScanner("QRreader", { fps: 10, qrbox: 250 });
+        html5QrcodeScanner.render(onScanSuccess);
+        function onScanSuccess(decodedText, decodedResult) {
+            let now = new Date();
+
+            let year = now.getFullYear();
+            let month = ("0" + (now.getMonth() + 1)).slice(-2); // Months are zero-based
+            let day = ("0" + now.getDate()).slice(-2);
+            let hours = ("0" + now.getHours()).slice(-2);
+            let minutes = ("0" + now.getMinutes()).slice(-2);
+            let seconds = ("0" + now.getSeconds()).slice(-2);
+            var CreatedBy = "<?php echo Auth::user()->name; ?>";
+            // Handle the scanned code as you like
+            // document.getElementById('QRresult').innerText = `Scanned result: ${decodedText}`;
+            $.ajax({
+                async:false,
+                type: 'post',
+                url: "{{route('insertabsen')}}",
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include the CSRF token in the headers
+                },
+                data: {
+                    'jadwal_id' : jQuery('#JadwalID').val(),
+                    'TanggalAbsen' : year+"-"+month+"-"+day+" "+hours+":"+minutes+":"+seconds,
+                    'siswa_id' : decodedText,
+                    'barcode_id' : generateRandomString(25),
+                    'CreatedBy' : CreatedBy,
+                    'source' : 'Web'
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success == true) {
+                        Swal.fire({
+                            text: "Berhasil Absen",
+                            icon: "success",
+                            title: "Horray...",
+                            // text: "Data berhasil disimpan! <br> " + response.Kembalian,
+                        });
+                    }
+                    else{
+                        Swal.fire({
+                            text: response.message,
+                            icon: "error",
+                            title: "Ups...",
+                            // text: "Data berhasil disimpan! <br> " + response.Kembalian,
+                        });
+                    }
+                }
+            });
+
+        }
 
 		jQuery(document).ready(function () {
 			jQuery('.Select2Combo').select2();
@@ -178,7 +256,15 @@
 
             loopFunction()
             
-        })
+        });
+
+        jQuery('#btScanQRCode').click(function () {
+            jQuery('#QRCodeScanner').modal({backdrop: 'static', keyboard: false})
+            jQuery('#QRCodeScanner').modal('show');
+
+            loopFunction()
+            
+        });
 
 
 		jQuery('#guru_id').change(function() {
@@ -340,10 +426,22 @@
 
             if (errorCount > 0) {
                 jQuery('#btGenerateQRCode').attr('disabled',true);
+                jQuery('#btScanQRCode').attr('disabled',true);
             }
             else{
                 jQuery('#btGenerateQRCode').attr('disabled',false);
+                jQuery('#btScanQRCode').attr('disabled',false);
             }
+        }
+
+        function generateRandomString(length) {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            const charactersLength = characters.length;
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
         }
 	});
 </script>

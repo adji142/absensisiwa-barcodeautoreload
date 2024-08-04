@@ -13,4 +13,10 @@ class Auth {
     final response = await http.post(url,body: Parameter);
     return json.decode(response.body);
   }
+
+  Future<Map> gantiPassword() async{
+    var url = Uri.parse("${sess!.server}changepass");
+    final response = await http.post(url,body: Parameter);
+    return json.decode(response.body);
+  }
 }

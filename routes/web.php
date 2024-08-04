@@ -27,6 +27,7 @@ use App\Http\Controllers\AbsensiController;
 
 Route::get('/', [LoginController::class,'login'])->name('login');
 Route::post('/action-login', [LoginController::class, 'action_login'])->name('action-login');
+Route::post('/changepass', [LoginController::class, 'ChangePassword'])->name('changepass');
 Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard')->middleware('auth');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
@@ -178,3 +179,4 @@ Route::get('/generate-qr-code', [AbsensiController::class, 'generateQrCode']);
 
 Route::post('/absensi/deactivebarcode', [AbsensiController::class, 'DeActivebarcode'])->name('absensi-deactivebarcode')->middleware('auth');
 Route::post('readreviewabsen',[AbsensiController::class,'ShowDataAbsensi'])->name('absensi-readreviewabsen')->middleware('auth');
+Route::post('insertabsen',[AbsensiController::class,'insertAbsensi'])->name('insertabsen')->middleware('auth');
